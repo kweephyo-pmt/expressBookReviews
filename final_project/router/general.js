@@ -174,4 +174,36 @@ public_users.get('/promise/author/:author', function (req, res) {
     });
 });
 
+// Task 13: Get book details based on Title using async-await with Axios
+public_users.get('/async/title/:title', async function (req, res) {
+  try {
+    const title = req.params.title;
+    // Using axios to make a request to our own API endpoint
+    const response = await axios.get(`http://localhost:3000/title/${encodeURIComponent(title)}`);
+    res.send(response.data);
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      res.status(404).json({message: "No books found with this title"});
+    } else {
+      res.status(500).json({message: "Error fetching books by title", error: error.message});
+    }
+  }
+});
+
+// Task 13: Get book details based on Title using Promise callbacks with Axios
+public_users.get('/promise/title/:title', function (req, res) {
+  const title = req.params.title;
+  axios.get(`http://localhost:3000/title/${encodeURIComponent(title)}`)
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 404) {
+        res.status(404).json({message: "No books found with this title"});
+      } else {
+        res.status(500).json({message: "Error fetching books by title", error: error.message});
+      }
+    });
+});
+
 module.exports.general = public_users;
