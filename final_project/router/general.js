@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -85,6 +86,28 @@ public_users.get('/review/:isbn',function (req, res) {
   } else {
     res.status(404).json({message: "Book not found"});
   }
+});
+
+// Task 10: Get the book list available in the shop using async-await with Axios
+public_users.get('/async', async function (req, res) {
+  try {
+    // Using axios to make a request to our own API endpoint
+    const response = await axios.get('http://localhost:3000/');
+    res.send(response.data);
+  } catch (error) {
+    res.status(500).json({message: "Error fetching books", error: error.message});
+  }
+});
+
+// Task 10: Get the book list available in the shop using Promise callbacks with Axios
+public_users.get('/promise', function (req, res) {
+  axios.get('http://localhost:3000/')
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch(error => {
+      res.status(500).json({message: "Error fetching books", error: error.message});
+    });
 });
 
 module.exports.general = public_users;
