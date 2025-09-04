@@ -142,4 +142,36 @@ public_users.get('/promise/isbn/:isbn', function (req, res) {
     });
 });
 
+// Task 12: Get book details based on Author using async-await with Axios
+public_users.get('/async/author/:author', async function (req, res) {
+  try {
+    const author = req.params.author;
+    // Using axios to make a request to our own API endpoint
+    const response = await axios.get(`http://localhost:3000/author/${encodeURIComponent(author)}`);
+    res.send(response.data);
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      res.status(404).json({message: "No books found by this author"});
+    } else {
+      res.status(500).json({message: "Error fetching books by author", error: error.message});
+    }
+  }
+});
+
+// Task 12: Get book details based on Author using Promise callbacks with Axios
+public_users.get('/promise/author/:author', function (req, res) {
+  const author = req.params.author;
+  axios.get(`http://localhost:3000/author/${encodeURIComponent(author)}`)
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 404) {
+        res.status(404).json({message: "No books found by this author"});
+      } else {
+        res.status(500).json({message: "Error fetching books by author", error: error.message});
+      }
+    });
+});
+
 module.exports.general = public_users;
