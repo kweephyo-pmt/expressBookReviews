@@ -110,4 +110,36 @@ public_users.get('/promise', function (req, res) {
     });
 });
 
+// Task 11: Get book details based on ISBN using async-await with Axios
+public_users.get('/async/isbn/:isbn', async function (req, res) {
+  try {
+    const isbn = req.params.isbn;
+    // Using axios to make a request to our own API endpoint
+    const response = await axios.get(`http://localhost:3000/isbn/${isbn}`);
+    res.send(response.data);
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      res.status(404).json({message: "Book not found"});
+    } else {
+      res.status(500).json({message: "Error fetching book details", error: error.message});
+    }
+  }
+});
+
+// Task 11: Get book details based on ISBN using Promise callbacks with Axios
+public_users.get('/promise/isbn/:isbn', function (req, res) {
+  const isbn = req.params.isbn;
+  axios.get(`http://localhost:3000/isbn/${isbn}`)
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 404) {
+        res.status(404).json({message: "Book not found"});
+      } else {
+        res.status(500).json({message: "Error fetching book details", error: error.message});
+      }
+    });
+});
+
 module.exports.general = public_users;
